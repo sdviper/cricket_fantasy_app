@@ -1,0 +1,186 @@
+<div style="height: 92vh;overflow-y: auto;">
+  <mat-card style="background-color: aliceblue;margin: 1.5%;min-height: 92%;">
+
+
+
+
+
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="row">
+              <div class="col">
+                Top Performers Prediction
+              </div>
+            </div>
+
+            <!-- <div class="row">
+                  <div class="col">
+                    <p class="match_no">Match {{match.match_no}}</p>
+                    <p class="match_name">{{match.match_name.split(',')[0]}}</p>
+                    <p class="match_result" *ngIf="match.match_result!=='NA'">{{match.match_result}}</p>
+                  </div>
+                  <div class="" style="background-color: black;width: .1vh; height: 10vh;">
+                  </div>
+                  <div class="col">
+                    <p class="match_name">{{match.match_date}} , {{match.match_time}}</p>
+                    <p class="match_name">{{match.match_venue}}</p>
+                  </div>
+                  <div class="" style="margin: 1%;">
+                    <button *ngIf="match.match_result !=='NA'" style="pointer-events: none;" class="btn btn-success">Completed</button>
+                    <button *ngIf="match.match_result ==='NA'" style="pointer-events: none;" class="btn btn-warning">Yet to start</button>
+                  </div>
+                </div> -->
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <hr>
+
+        <div style="text-align: center;
+        font-family: monospace;" *ngIf=this.matchResult>
+          <p>{{this.innings1}} VS {{this.innings2}} ,{{matchNo}}</p>
+          <p>{{this.innings1Score}} VS {{this.innings2Score}}</p>
+          <p style="font-weight: bold;">{{this.matchResult.result.update}}</p>
+        </div>
+        <mat-tab-group mat-align-tabs="center" style="overflow: hidden;" animationDuration="0ms">
+          <mat-tab style="font-family: monospace;" label="Predict" *ngIf="this.matchResult">
+            <div class="row" style="width: 100%;">
+              <div class="col" style="text-align: center;">
+                <p>First Innings</p>
+                <mat-form-field appearance="fill" style="width: 100%;">
+                  <mat-label>Top Batsman</mat-label>
+                  <mat-select [(ngModel)]="batsmanInnings1">
+                    <mat-option *ngFor="let batsman of this.matchResult.playing_eleven[this.innings1]" [value]="batsman"
+                      (change)="selectChangeHandler($event)">
+                      {{batsman}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" style="width: 100%;">
+                  <mat-label>Top Bowler</mat-label>
+                  <mat-select [(ngModel)]="bowlerInnings1">
+                    <mat-option *ngFor="let bowler of this.matchResult.playing_eleven[this.innings2]" [value]="bowler">
+                      {{bowler}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </div>
+              <div class="col" style="text-align: center;">
+                <p>Second Innings</p>
+                <mat-form-field appearance="fill" style="width: 100%;">
+                  <mat-label>Top Batsman</mat-label>
+                  <mat-select [(ngModel)]="batsmanInnings2">
+                    <mat-option *ngFor="let batsman of this.matchResult.playing_eleven[this.innings2]" [value]="batsman"
+                      (change)="selectChangeHandler($event)">
+                      {{batsman}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" style="width: 100%;">
+                  <mat-label>Top Bowler</mat-label>
+                  <mat-select [(ngModel)]="bowlerInnings2">
+                    <mat-option *ngFor="let bowler of this.matchResult.playing_eleven[this.innings1]" [value]="bowler">
+                      {{bowler}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <mat-form-field appearance="fill" style="width: 50%;">
+                <mat-label>Team Wins The Battle</mat-label>
+                <mat-select [(ngModel)]="winningTeam">
+                  <mat-option [value]="innings1">
+                    {{innings1}}
+                  </mat-option>
+                  <mat-option [value]="innings1">
+                    {{innings2}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div style="text-align: center;">
+              <button class="btn btn-success" style="text-align: center;" (click)="predictTopPerformer()">Predict & Win
+                Nothing</button>
+            </div>
+          </mat-tab>
+          <mat-tab style="font-family: monospace;" label="Leaderboard">
+
+            <mat-accordion>
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    PlayerName
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Total Points : 800
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="row" style="width: 100%;">
+                  <div class="col" style="text-align: center;">
+                    <p>First Innings</p>
+                    <div class="input-group" style="text-align: center;">
+                      <span class="input-group-text" style="width: 32vh;">Powerplay (1 - 6 Overs)</span>
+                      <input type="number" aria-label="First name" class="form-control"
+                        [(ngModel)]="firstInningsPPRuns">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="firstInningsPPWickets">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="firstInningsPPPoints">
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-text" style="width: 32vh;">Middle Overs (7 - 15 Overs)</span>
+                      <input type="number" aria-label="First name" class="form-control"
+                        [(ngModel)]="firstInningsMORuns">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="firstInningsMOWickets">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="firstInningsMOPoints">
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-text" style="width: 32vh;">Death Overs (16 - 20 Overs)</span>
+                      <input type="number" aria-label="First name" class="form-control"
+                        [(ngModel)]="firstInningsDORuns">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="firstInningsDOWickets">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="firstInningsDOPoints">
+                    </div>
+                  </div>
+                  <div class="col" style="text-align: center;">
+                    <p>Second Innings</p>
+                    <div class="input-group" style="text-align: center;">
+                      <span class="input-group-text" style="width: 32vh;">Powerplay (1 - 6 Overs)</span>
+                      <input type="number" aria-label="second name" class="form-control"
+                        [(ngModel)]="secondInningsPPRuns">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="secondInningsPPWickets">
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-text" style="width: 32vh;">Middle Overs (7 - 15 Overs)</span>
+                      <input type="number" aria-label="second name" class="form-control"
+                        [(ngModel)]="secondInningsMORuns">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="secondInningsMOWickets">
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-text" style="width: 32vh;">Death Overs (16 - 20 Overs)</span>
+                      <input type="number" aria-label="second name" class="form-control"
+                        [(ngModel)]="secondInningsDORuns">
+                      <input type="number" aria-label="Last name" class="form-control"
+                        [(ngModel)]="secondInningsDOWickets">
+                    </div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+</div>
